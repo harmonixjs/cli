@@ -1,0 +1,34 @@
+# Sources
+src/
+*.ts
+!*.d.ts
+
+# Tests
+tests/
+__tests__/
+*.test.ts
+*.spec.ts
+coverage/
+
+# Examples
+examples/
+
+# Config files
+tsconfig.json
+.prettierrc
+.editorconfig
+
+# Git
+.git/
+.gitignore
+.github/
+
+# IDE
+.vscode/
+.idea/
+
+# Build
+*.log
+node_modules/
+.DS_Store
+*.tsbuildinfo
