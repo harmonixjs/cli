@@ -1,6 +1,6 @@
 {
   "name": "@harmonixjs/cli",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "CLI for Harmonix Discord framework",
   "bin": {
     "harmonix": "./bin/harmonix.js"
@@ -37,7 +37,8 @@
     "execa": "^8.0.0",
     "fs-extra": "^11.2.0",
     "gradient-string": "^2.0.2",
-    "inquirer": "^9.2.0"
+    "inquirer": "^9.2.0",
+    "discord.js": "^14.26.4"
   },
   "devDependencies": {
     "@harmonixjs/core": "file:../core",
@@ -45,7 +46,6 @@
     "@types/gradient-string": "^1.1.6",
     "@types/inquirer": "^9.0.0",
     "@types/node": "^20.0.0",
-    "discord.js": "^14.26.4",
     "typescript": "^5.4.0"
   },
   "engines": {
