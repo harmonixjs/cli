@@ -1,21 +1,21 @@
 import chalk from 'chalk';
 
-export function log(message: string) {
+export function log(message: string): void {
   console.log(message);
 }
 
-export function success(message: string) {
+export function success(message: string): void {
   console.log(chalk.green(message));
 }
 
-export function error(message: string) {
-  console.log(chalk.red(`✖ ${message}`));
+export function error(message: string): void {
+  console.error(chalk.red(`Error: ${message}`));
 }
 
-export function warning(message: string) {
-  console.log(chalk.yellow(`⚠ ${message}`));
+export function warning(message: string): void {
+  console.warn(chalk.yellow(`Warning: ${message}`));
 }
 
-export function info(message: string) {
-  console.log(chalk.blue(`ℹ ${message}`));
+export function info(message: string): void {
+  console.log(chalk.blue(message));
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-// Point d'entrée pour l'exécutable
-// Compatible Windows et Linux grâce au shebang
-require('../dist/index.js');
+const { run, reportCliError } = require('../dist/cli.js');
+
+run().catch(reportCliError);

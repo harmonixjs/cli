@@ -1,6 +1,6 @@
 {
   "name": "@harmonixjs/cli",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "CLI for Harmonix Discord framework",
   "bin": {
     "harmonix": "./bin/harmonix.js"
@@ -10,12 +10,16 @@
   "files": [
     "dist",
     "bin",
-    "templates",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
-    "build": "tsc",
+    "build": "node scripts/clean.js && tsc",
     "dev": "tsc --watch",
+    "test": "node scripts/smoke-test.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -33,17 +37,15 @@
     "execa": "^8.0.0",
     "fs-extra": "^11.2.0",
     "gradient-string": "^2.0.2",
-    "inquirer": "^9.2.0",
-    "ora": "^7.0.0",
-    "ts-node": "^10.9.2"
+    "inquirer": "^9.2.0"
   },
   "devDependencies": {
-    "@harmonixjs/core": "^1.0.4",
+    "@harmonixjs/core": "file:../core",
     "@types/fs-extra": "^11.0.0",
     "@types/gradient-string": "^1.1.6",
     "@types/inquirer": "^9.0.0",
     "@types/node": "^20.0.0",
-    "discord.js": "^14.25.1",
+    "discord.js": "^14.26.4",
     "typescript": "^5.4.0"
   },
   "engines": {

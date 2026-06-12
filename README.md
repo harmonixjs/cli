@@ -1,76 +1,150 @@
 # @harmonixjs/cli
 
-CLI tool for the **Harmonix Discord framework**.  
-Quickly initialize projects, generate commands, events, and components for your Discord bot.
-
----
+Project and production tooling for HarmonixJS v2.
 
 ## Installation
 
-You can use `npx` to run the CLI without installing it globally:
+```bash
+npm install --global @harmonixjs/cli
+```
+
+The CLI also works through `npx`:
 
 ```bash
-npx @harmonixjs/cli <command>
+npx @harmonixjs/cli init my-bot
 ```
 
-Or install globally:
+## Create a project
+
+Interactive:
 
 ```bash
-npm install -g @harmonixjs/cli
+harmonix init
 ```
 
-## Usage
-
-### 1. Initialize a new project
-
-Creates a new Harmonix bot project with the recommended structure:
+Non-interactive:
 
 ```bash
-npx @harmonixjs/cli init
+harmonix init my-bot \
+  --template basic \
+  --package-manager npm \
+  --plugins quick-db,i18n,shard \
+  --docker \
+  --compose
 ```
 
-This will generate:
-- Project folder with `src` directorie
-- Base configuration files
-- Initial bot setup
+Generated projects contain a `harmonix.config.json`. This file is used only by
+the CLI; the runtime bot configuration remains in `src/index.ts`.
 
----
-
-### 2. Create a new component
-
-Generates commands, events, or components using predefined templates:
+## Generate application artifacts
 
 ```bash
-npx @harmonixjs/cli create
+harmonix create command ban --subtype slash
+harmonix create command "View profile" --subtype user
+harmonix create event GuildLogger --event guildCreate
+harmonix create component ConfirmDelete --subtype button
 ```
 
-This will generate the respective file in the appropriate folder with boilerplate code ready to use.
+Running `harmonix create` without arguments opens the interactive generator.
 
-## Project Structure
+Supported command types:
 
-After initializing, your project will look like this:
+- `slash`
+- `prefix`
+- `both`
+- `user`
+- `message`
 
-```pgsql
-project/
-├─ node_modules/
-├─ src/
-│  ├─ commands/
-│  ├─ events/
-│  ├─ components/
-│  └─ index.ts
-├─ .env
-├─ package-lock.json
-├─ package.json
-└─ tsconfig.json
+Supported components:
+
+- `button`
+- `string-select`
+- `user-select`
+- `role-select`
+- `channel-select`
+- `mentionable-select`
+- `modal`
+
+## Manage plugins
+
+```bash
+harmonix add quick-db
+harmonix add express
+harmonix add i18n
+harmonix add shard
+harmonix plugins
+harmonix plugins --available
+harmonix remove i18n
 ```
 
-- `src/` - your TypeScript source code
-- `src/index.ts` - basic index.ts file
-- `.env` - default environment configuration
+Official aliases and package names are both accepted:
 
+```bash
+harmonix add @harmonixjs/i18n
+```
 
-## Contributing
+Constructor options can be overridden during installation:
 
-Feel free to open issues or submit pull requests.
-Please follow the code style and structure used in the templates.
-If you create some plugins you could open issues or submit pull requests to add your plugins/cli features.
+```bash
+harmonix add express --options '{"port":4000,"controllersPath":"./src/http"}'
+```
+
+Third-party plugins can be added when their exported class and registry name
+are known:
+
+```bash
+harmonix add @scope/harmonix-plugin \
+  --export-name CustomPlugin \
+  --plugin-name custom
+```
+
+The CLI maintains `src/harmonix.plugins.ts`, dependencies, plugin assets and
+the shard launcher. It can also adopt older projects that do not yet contain a
+`harmonix.config.json`.
+
+## Development and production
+
+```bash
+harmonix dev
+harmonix build
+harmonix start --build
+harmonix doctor --build
+```
+
+When `@harmonixjs/shard` is configured, `harmonix start` automatically uses
+the sharded entrypoint. Use `harmonix dev --sharded` to build and launch the
+shard manager during development.
+
+## Docker
+
+```bash
+harmonix docker
+harmonix docker --compose
+```
+
+Generated files:
+
+- multi-stage `Dockerfile`
+- `.dockerignore`
+- optional `docker-compose.yml`
+- persistent `/app/data` volume
+- port `3000` when the Express plugin is configured
+- automatic sharded or non-sharded startup
+
+The Docker image runs as the non-root `node` user and installs production
+dependencies from the selected package manager's lockfile.
+
+## Commands
+
+```text
+harmonix init [name]
+harmonix create [type] [name]
+harmonix add [plugin]
+harmonix remove <plugin>
+harmonix plugins
+harmonix docker
+harmonix dev
+harmonix build
+harmonix start
+harmonix doctor
+```
