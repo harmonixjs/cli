@@ -36,3 +36,6 @@ Thumbs.db
 *.sqlite
 *.db
 data/
+
+# Other package manager
+bun.lock
