@@ -17,6 +17,8 @@ function run(args, cwd = root) {
   if (result.status !== 0) {
     throw new Error(`${result.stdout}\n${result.stderr}`);
   }
+
+  return result.stdout;
 }
 
 try {
@@ -36,7 +38,16 @@ try {
   run(['create', 'command', 'Ban', '--subtype', 'slash'], project);
   run(['create', 'event', 'GuildLogger', '--event', 'guildCreate'], project);
   run(['create', 'component', 'Confirm', '--subtype', 'button'], project);
+  const availablePlugins = run(['plugin', '-a'], project);
+
+  assert.match(availablePlugins, /quick-db\s+@harmonixjs\/quick-db/);
+  assert.match(availablePlugins, /express\s+@harmonixjs\/express/);
+  assert.match(availablePlugins, /i18n\s+@harmonixjs\/i18n/);
+  assert.match(availablePlugins, /shard\s+@harmonixjs\/shard/);
+  assert.match(availablePlugins, /ui\s+@harmonixjs\/ui/);
+
   run(['add', 'express', '--no-install'], project);
+  run(['add', 'ui', '--no-install'], project);
 
   assert.ok(fs.existsSync(path.join(project, 'harmonix.config.json')));
   assert.ok(fs.existsSync(path.join(project, 'src', 'harmonix.plugins.ts')));
@@ -70,6 +81,14 @@ try {
   assert.match(
     fs.readFileSync(path.join(project, 'docker-compose.yml'), 'utf8'),
     /3000:3000/
+  );
+  assert.match(
+    fs.readFileSync(path.join(project, 'package.json'), 'utf8'),
+    /"@harmonixjs\/ui": "\^0\.1\.0"/
+  );
+  assert.doesNotMatch(
+    fs.readFileSync(path.join(project, 'harmonix.config.json'), 'utf8'),
+    /@harmonixjs\/ui/
   );
 
   run(['remove', 'shard', '--no-install'], project);

@@ -16,6 +16,7 @@ import { requireProject } from '../utils/project';
 import { success, warning } from '../utils/logger';
 import {
   findPluginDefinition,
+  isConfigurablePluginDefinition,
   pluginRegistry,
   toPluginConfig
 } from '../plugins/registry';
@@ -57,9 +58,39 @@ export async function addPluginCommand(
   const dependencies: Record<string, string> = {};
 
   if (definition) {
-    plugin = toPluginConfig(definition);
     dependencies[definition.package] = definition.version;
     Object.assign(dependencies, definition.dependencies);
+
+    if (!isConfigurablePluginDefinition(definition)) {
+      if (options.options) {
+        throw new Error(`${definition.package} does not accept plugin constructor options.`);
+      }
+
+      const packageJson = await readPackageJson(root);
+      if (packageJson.dependencies?.[definition.package]) {
+        warning(`${definition.package} is already installed.`);
+        return;
+      }
+
+      packageJson.dependencies = {
+        ...packageJson.dependencies,
+        ...dependencies
+      };
+      await writePackageJson(root, packageJson);
+
+      if (options.install !== false) {
+        await addDependencies(
+          config.packageManager,
+          Object.entries(dependencies).map(([name, version]) => `${name}@${version}`),
+          root
+        );
+      }
+
+      success(`Package ${definition.package} added.`);
+      return;
+    }
+
+    plugin = toPluginConfig(definition);
   } else {
     if (
       !process.stdin.isTTY &&
@@ -196,7 +227,7 @@ export async function listPluginsCommand(
 ): Promise<void> {
   if (options.available) {
     for (const plugin of pluginRegistry) {
-      console.log(`${plugin.id.padEnd(12)} ${plugin.package} - ${plugin.description}`);
+      console.log(`${plugin.id.padEnd(12)} ${plugin.package}@${plugin.version} - ${plugin.description}`);
     }
     return;
   }

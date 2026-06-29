@@ -15,8 +15,8 @@ import {
 } from '../utils/package-manager';
 import { success } from '../utils/logger';
 import {
+  configurablePluginRegistry,
   findPluginDefinition,
-  pluginRegistry,
   toPluginConfig
 } from '../plugins/registry';
 import {
@@ -61,7 +61,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       type: 'checkbox',
       name: 'plugins',
       message: 'Plugins:',
-      choices: pluginRegistry.map(plugin => ({
+      choices: configurablePluginRegistry.map(plugin => ({
         name: `${plugin.package} - ${plugin.description}`,
         value: plugin.id,
         checked: options.template === 'api' && plugin.id === 'express'

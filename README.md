@@ -4,6 +4,9 @@ Project and production tooling for HarmonixJS v2.
 
 ## Installation
 
+Install the CLI globally when you want the `harmonix` command available
+everywhere:
+
 ```bash
 npm install --global @harmonixjs/cli
 ```
@@ -19,13 +22,13 @@ npx @harmonixjs/cli init my-bot
 Interactive:
 
 ```bash
-harmonix init
+npx @harmonixjs/cli init
 ```
 
 Non-interactive:
 
 ```bash
-harmonix init my-bot \
+npx @harmonixjs/cli init my-bot \
   --template basic \
   --package-manager npm \
   --plugins quick-db,i18n,shard \
@@ -72,10 +75,15 @@ harmonix add quick-db
 harmonix add express
 harmonix add i18n
 harmonix add shard
+harmonix add ui
 harmonix plugins
-harmonix plugins --available
+harmonix plugin -a
 harmonix remove i18n
 ```
+
+`@harmonixjs/ui` is a standalone discord.js UI package. It is listed by
+`harmonix plugin -a` and can be installed with `harmonix add ui`, but it is
+not added to `harmonix.config.json` or `src/harmonix.plugins.ts`.
 
 Official aliases and package names are both accepted:
 
@@ -142,6 +150,7 @@ harmonix create [type] [name]
 harmonix add [plugin]
 harmonix remove <plugin>
 harmonix plugins
+harmonix plugin -a
 harmonix docker
 harmonix dev
 harmonix build

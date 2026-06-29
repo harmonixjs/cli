@@ -65,6 +65,7 @@ export function createProgram(): Command {
 
   program
     .command('plugins')
+    .alias('plugin')
     .description('List configured plugins')
     .option('-a, --available', 'list the built-in plugin catalog')
     .action(listPluginsCommand);

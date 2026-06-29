@@ -4,8 +4,9 @@ export interface PluginDefinition {
   id: string;
   package: string;
   version: string;
-  export: string;
-  name: string;
+  kind?: 'plugin' | 'package';
+  export?: string;
+  name?: string;
   description: string;
   dependencies?: Record<string, string>;
   defaultOptions?: Record<string, unknown>;
@@ -61,8 +62,17 @@ export const pluginRegistry: PluginDefinition[] = [
     export: 'ShardPlugin',
     name: 'shard',
     description: 'Automatic Discord sharding'
+  },
+  {
+    id: 'ui',
+    package: '@harmonixjs/ui',
+    version: '^0.1.0',
+    kind: 'package',
+    description: 'Discord UI views and controls for discord.js and HarmonixJS'
   }
 ];
+
+export const configurablePluginRegistry = pluginRegistry.filter(isConfigurablePluginDefinition);
 
 export function findPluginDefinition(value: string): PluginDefinition | undefined {
   return pluginRegistry.find(plugin =>
@@ -70,7 +80,17 @@ export function findPluginDefinition(value: string): PluginDefinition | undefine
   );
 }
 
+export function isConfigurablePluginDefinition(
+  definition: PluginDefinition
+): definition is PluginDefinition & { export: string; name: string } {
+  return definition.kind !== 'package' && Boolean(definition.export && definition.name);
+}
+
 export function toPluginConfig(definition: PluginDefinition): HarmonixPluginConfig {
+  if (!isConfigurablePluginDefinition(definition)) {
+    throw new Error(`${definition.package} is installable but is not a HarmonixJS runtime plugin.`);
+  }
+
   return {
     package: definition.package,
     export: definition.export,
