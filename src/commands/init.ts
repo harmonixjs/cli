@@ -72,7 +72,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       type: 'list',
       name: 'packageManager',
       message: 'Package manager:',
-      choices: ['npm', 'pnpm', 'yarn'],
+      choices: ['npm', 'pnpm', 'yarn', 'bun'],
       default: detectPackageManager(),
       when: interactive && !options.packageManager
     },

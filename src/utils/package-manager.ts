@@ -2,15 +2,17 @@ import { execa, Options } from 'execa';
 import fs from 'fs-extra';
 import path from 'path';
 
-export type PackageManager = 'npm' | 'yarn' | 'pnpm';
+export type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun';
 
 export function detectPackageManager(directory = process.cwd()): PackageManager {
   const userAgent = process.env.npm_config_user_agent;
 
   if (userAgent?.includes('yarn')) return 'yarn';
   if (userAgent?.includes('pnpm')) return 'pnpm';
+  if (userAgent?.includes('bun')) return 'bun';
   if (fs.existsSync(path.join(directory, 'yarn.lock'))) return 'yarn';
   if (fs.existsSync(path.join(directory, 'pnpm-lock.yaml'))) return 'pnpm';
+  if (fs.existsSync(path.join(directory, 'bun.lock'))) return 'bun';
   return 'npm';
 }
 
